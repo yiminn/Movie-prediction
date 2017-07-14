@@ -55,41 +55,63 @@ def obtainPca(n):
     df = pd.DataFrame(newData)
     return df
 
+
 def create_data(method,file_name):
-    title = pd.read_csv('Test_Set/test_set_trailers.csv')
-    title = title.drop(['movie'], axis= 1)
-    title = title.drop(['trailer'], axis= 1)
 
     df = method(0)
 
     for i in range(1,223):
         df1 = method(i)
-        df = pd.concat([df,df1])
+        df = pd.concat([df,df1],axis=0)
         print(i,'has been concacted')
     df.index = range(0,223)
-    df2 = pd.concat([title,df],axis=1)
-    df2.to_csv('ProcessedData/'+file_name, index=False, header=True)
-    return df2
+    # df2 = pd.concat([title,df],axis=1)
+    df.to_csv('ProcessedData/test_set/'+file_name, index=False, header=True)
+    return df
 
 def create_textdata(file_name):
-    title = pd.read_csv('Test_Set/test_set_trailers.csv')
-    title = title.drop(['movie'], axis= 1)
-    title = title.drop(['trailer'], axis= 1)
-    df = pd.read_csv('/Users/DYM/PycharmProjects/MasterFYP/Test_Set/text_descriptors/tdf_idf_test.csv', header=None)
+    df = pd.read_csv('Test_Set/text_descriptors/tdf_idf_test_orig.csv', header=None)
     df = df.T
-    df2 = pd.concat([title, df], axis=1)
-    df2.to_csv('ProcessedData/'+file_name, index=False, header=True)
-    return df2
+    df.to_csv('ProcessedData/test_set/'+file_name, index=False, header=True)
+    return df
 
 if __name__ == '__main__':
     # create_data(obtainvector,'VisualDataTest.csv')
 
-    # create_data(obtainmeta,'MetaDataTest.csv')
+    create_data(obtainmeta,'MetaData.csv')
 
     # create_data(obtainv3,'V3DataTest.csv')
 
-      #create_textdata('TextualDataTest.csv')
+    # create_textdata('TextualData.csv')
 
-    create_data(obtainPca, 'AudioDataTest.csv')
+    # create_data(obtainPca, 'AudioData.csv')
 
+    # Process_Metadata()
 #print(data)
+
+
+# def Process_Metadata():
+#     df = pd.read_csv('processedData/MetaDataTest.csv')
+#     df=df.drop(['filename','BoxOffice','DVD','Production','Website','actors','awards',
+#             'country','director','imdbID','plot','poster','released','released',
+#             'type','writer','year','tomatoConsensus','title'],axis=1)
+#     feature_names = df.columns[0:].tolist()
+#     for i in range(len(df.runtime)):
+#         string = df.runtime[i]
+#         df.runtime[i] = string.replace(' min','')
+#     df.runtime = df.runtime.astype(float)
+#
+#     print('these feature contain missing value ')
+#     for feature in feature_names:
+#         if len(df[feature][df[feature].isnull()]) > 0:
+#             print(feature)
+#
+#     for feature in ['tomatoImage','rated']:
+#         df[feature][df[feature].isnull()] = 'U0'
+#
+#     for feature in feature_names:
+#         if len(df[feature][df[feature].isnull()]) > 0:
+#             df[feature][df[feature].isnull()]=df[feature].median()
+#     df1=pd.get_dummies(df)
+#     df1.to_csv('ProcessedData/test_set/ProcessedMetaTest.csv',index=False)
+#     return
